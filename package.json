@@ -1,0 +1,22 @@
+{
+  "name": "@danmasta/env",
+  "version": "1.0.0",
+  "author": "Daniel Smith <dannmasta@gmail.com>",
+  "description": "Environment variable helper for node apps",
+  "keywords": [],
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danmasta/env.git"
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "npm": ">=3.0.0",
+    "node": ">=6.0.0"
+  },
+  "dependencies": {
+  }
+}

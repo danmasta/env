@@ -5,18 +5,17 @@
   "description": "Environment variable helper for node apps",
   "keywords": [],
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/danmasta/env.git"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "engines": {
     "npm": ">=3.0.0",
     "node": ">=6.0.0"
   },
   "dependencies": {
+    "minimist": "^1.2.0"
   }
 }

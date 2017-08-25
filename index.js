@@ -1,5 +1,9 @@
 const path = require('path');
 const fs = require('fs');
+const minimist = require('minimist');
+
+// get cmd args
+const argv = minimist(process.argv.slice(2));
 
 // primitive types
 const types = {
@@ -19,7 +23,6 @@ function isNumeric(n){
 function get(key){
 
     let val = process.env[key];
-
     return val in types ? types[val] : isNumeric(val) ? parseFloat(val) : val;
 
 };
@@ -55,6 +58,10 @@ function env(key, val){
 
 // attempt to load env configuration files
 function init(){
+
+    if(argv.production || argv.prod){
+        set('NODE_ENV', 'production');
+    }
 
     // load and parse .env file
     ['./.env'].map(file => {
@@ -96,7 +103,9 @@ function init(){
 
     });
 
-    set('DEV', /development|undefined/.test(get('NODE_ENV')));
+    set('NODE_ENV', 'development');
+    set('DEV', /development/.test(get('NODE_ENV')));
+    set('PROD', /production/.test(get('NODE_ENV')));
 
 };
 

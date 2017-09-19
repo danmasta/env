@@ -62,7 +62,7 @@ function init(){
     let prod = argv._.findIndex(e => { return /production|prod/.test(e) }) > -1;
 
     // NODE_ENV = true if production cli flag passed
-    if(argv.production || argv.prod || prod){
+    if(prod || argv.production || argv.prod){
         set('NODE_ENV', 'production');
     }
 

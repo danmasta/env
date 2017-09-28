@@ -17,7 +17,7 @@ const types = {
 // https://stackoverflow.com/a/1830844/2180385
 function isNumeric(n){
     return !isNaN(parseFloat(n)) && isFinite(n);
-};
+}
 
 // get env variable, converts to native type
 function get(key){
@@ -25,13 +25,13 @@ function get(key){
     let val = process.env[key];
     return val in types ? types[val] : isNumeric(val) ? parseFloat(val) : val;
 
-};
+}
 
 // sets environment variable if it does not exist already
 // env variables are stringified when set
 function set(key, val){
     return process.env[key] = (process.env[key] === undefined ? val : process.env[key]);
-};
+}
 
 function env(key, val){
 
@@ -54,12 +54,12 @@ function env(key, val){
 
     return process.env;
 
-};
+}
 
 // attempt to load env configuration files
 function init(){
 
-    let prod = argv._.findIndex(e => { return /production|prod/.test(e) }) > -1;
+    let prod = argv._.findIndex(e => { return /production|prod/.test(e); }) > -1;
 
     // NODE_ENV = true if production cli flag passed
     if(prod || argv.production || argv.prod){
@@ -110,7 +110,7 @@ function init(){
     set('DEV', /development/.test(get('NODE_ENV')));
     set('PROD', /production/.test(get('NODE_ENV')));
 
-};
+}
 
 init();
 

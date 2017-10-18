@@ -64,7 +64,7 @@ function init(){
         set('NODE_ENV', argv.env);
     }
 
-    // set NODE_ENV to 'production' --prod or --production flag set
+    // set NODE_ENV to 'production' if --prod or --production flag set
     if(argv.production || argv.prod ){
         set('NODE_ENV', 'production');
     }

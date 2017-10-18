@@ -43,6 +43,8 @@ When values are set on `process.env`, by default they are always converted to a 
 ## Default `NODE_ENV`
 This package will attempt to ensure the `NODE_ENV` variable is always set. If it is `undefined` it will set it to 'development', otherwise if the `--prod` or `--production` flag is passed as a cmd line argument, it will set `NODE_ENV` to 'production', only if it is `undefined`.
 
+You can also set `NODE_ENV` to any value by passing `--env value` as an argument when running your app
+
 *For the best configuration experience, this package works really well in tandem with the [config](https://github.com/danmasta/config) package*
 
 ## Examples

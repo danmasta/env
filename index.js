@@ -59,10 +59,13 @@ function env(key, val){
 // attempt to load env configuration files
 function init(){
 
-    let prod = argv._.findIndex(e => { return /production|prod/.test(e); }) > -1;
+    // set NODE_ENV to --env value
+    if(argv.env){
+        set('NODE_ENV', argv.env);
+    }
 
-    // NODE_ENV = true if production cli flag passed
-    if(prod || argv.production || argv.prod){
+    // set NODE_ENV to 'production' --prod or --production flag set
+    if(argv.production || argv.prod ){
         set('NODE_ENV', 'production');
     }
 

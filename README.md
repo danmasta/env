@@ -73,8 +73,4 @@ env('DEV'); // true if NODE_ENV = 'development' or undefined
 ```
 
 ## Contact
-If you have any questions feel free to get in touch:
-
-Name | Role | Email
------|------|------
-Daniel Smith | Engineer | dannmasta@gmail.com
+If you have any questions feel free to get in touch

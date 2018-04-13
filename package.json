@@ -3,23 +3,32 @@
   "version": "1.1.0",
   "author": "Daniel Smith <dannmasta@gmail.com>",
   "description": "Environment variable helper for node apps",
-  "keywords": [],
+  "keywords": [
+    "dotenv",
+    "env",
+    "environment",
+    "config"
+  ],
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+      "test": "mocha tests"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/danmasta/env.git"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^5.0.5"
   },
   "engines": {
-    "npm": ">=3.0.0",
-    "node": ">=6.0.0"
+    "npm": ">=3",
+    "node": ">=6"
   },
   "dependencies": {
     "minimist": "^1.2.0"

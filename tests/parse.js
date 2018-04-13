@@ -1,0 +1,73 @@
+describe('parse', () => {
+
+    it('should parse env values from strings', () => {
+
+        let res = env.parse(envstr);
+
+        // generic
+        expect(res.NODE_ENV).to.equal('test');
+        expect(res.TEST_HOST).to.equal('127.0.0.1');
+        expect(res.TEST_PORT).to.equal('6379');
+        expect(res.PATH).to.equal(process.env.PATH);
+        expect(res.TRUE).to.equal('true');
+        expect(res.FALSE).to.equal('false');
+        expect(res.NULL).to.equal('null');
+        expect(res.UNDEFINED).to.equal('undefined');
+        expect(res.NAN).to.equal('NaN');
+
+        // numbers
+        expect(res.NUMBER).to.equal('9000');
+
+        // strings
+        expect(res.STRING1).to.equal('string');
+        expect(res.STRING2).to.equal('string with spaces');
+        expect(res.STRING3).to.equal('string with double quotes');
+        expect(res.STRING4).to.equal('string with single quotes');
+
+        // whitespace
+        expect(res.SPACE1).to.equal('test');
+        expect(res.SPACE2).to.equal('test');
+        expect(res.SPACE3).to.equal('test');
+        expect(res.SPACE4).to.equal('test ');
+        expect(res.SPACE5).to.equal('test');
+        expect(res.SPACE6).to.equal('test\n');
+        expect(res.SPACE7).to.equal('test');
+        expect(res.SPACE8).to.equal('test');
+        expect(res.SPACE9).to.equal('test ');
+
+        // expansions
+        expect(res.TEST_URL1).to.equal('redis://127.0.0.1:6379');
+        expect(res.TEST_URL2).to.equal('redis://127.0.0.1:6379');
+        expect(res.TEST_URL3).to.equal('redis://127.0.0.1:6379');
+        expect(res.TEST_URL4).to.equal('redis://127.0.0.1:6379');
+
+        // escapes
+        expect(res.ESCAPED1).to.equal('$ESCAPED');
+        expect(res.ESCAPED2).to.equal('Copyright \u00A9');
+        expect(res.ESCAPED3).to.equal('p@$$w%r^D');
+        expect(res.ESCAPED4).to.equal('p@$$@#w%r^D');
+        expect(res.ESCAPED5).to.equal('test$test');
+        expect(res.ESCAPED6).to.equal('test\\undefined');
+        expect(res.ESCAPED7).to.equal('test\\test');
+        expect(res.ESCAPED8).to.equal('\u{1d306}');
+        expect(res.ESCAPED9).to.equal('\u2665');
+        expect(res.ESCAPED10).to.equal('\xA5');
+        expect(res.ESCAPED11).to.equal('\1');
+        expect(res.ESCAPED12).to.equal('\01');
+        expect(res.ESCAPED13).to.equal('\001');
+        expect(res.ESCAPED14).to.equal('\b');
+        expect(res.ESCAPED15).to.equal('\t');
+        expect(res.ESCAPED16).to.equal('\0');
+
+        // comments
+        expect(res.COMMENT1).to.equal('test');
+        expect(res.COMMENT2).to.equal('test #comment');
+        expect(res.COMMENT3).to.equal('test #comment');
+        expect(res.COMMENT4).to.equal('test #comment');
+        expect(res.COMMENT5).to.equal('test#test');
+
+        expect(Object.keys(res).length).to.equal(48);
+
+    });
+
+});

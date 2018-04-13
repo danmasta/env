@@ -1,52 +1,42 @@
 const path = require('path');
 const fs = require('fs');
 const minimist = require('minimist');
+const util = require('./lib/util');
+const constants = require('./lib/constants');;
+const types = constants.TYPES;
 
 // get cmd args
 const argv = minimist(process.argv.slice(2));
 
-// primitive types
-const types = {
-    'true': true,
-    'false': false,
-    'null': null,
-    'undefined': undefined,
-    'NaN': NaN
-};
-
-// https://stackoverflow.com/a/1830844/2180385
-function isNumeric(n){
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
 // get env variable, converts to native type
-function get(key){
+function get(key) {
 
     let val = process.env[key];
-    return val in types ? types[val] : isNumeric(val) ? parseFloat(val) : val;
+
+    return val in types ? types[val] : util.isNumeric(val) ? parseFloat(val) : val;
 
 }
 
 // sets environment variable if it does not exist already
 // env variables are stringified when set
-function set(key, val){
+function set(key, val) {
     return process.env[key] = (process.env[key] === undefined ? val : process.env[key]);
 }
 
-function env(key, val){
+function env(key, val) {
 
     // handle get
-    if(typeof key === 'string' && val === undefined){
+    if (typeof key === 'string' && val === undefined) {
         return get(key);
     }
 
     // handle setting single values
-    if(arguments.length === 2){
+    if (arguments.length === 2) {
         return set(key, val);
     }
 
     // handle setting objects
-    if(key && typeof key === 'object' && !(key instanceof Array)){
+    if (key && typeof key === 'object' && !(key instanceof Array)) {
         for(let i in key){
             set(i, key[i]);
         }
@@ -56,65 +46,62 @@ function env(key, val){
 
 }
 
+// load a file's contents and add to env
+function load(file) {
+
+    let contents = null;
+
+    file = path.resolve(file);
+
+    // handle .env files
+    if (constants.REGEX.envfile.test(file)) {
+        contents = util.parse(fs.readFileSync(file, 'utf8'));
+
+    // handle .js/.json files
+    } else {
+        contents = require(file);
+    }
+
+    return env(contents);
+
+}
+
 // attempt to load env configuration files
 function init(){
 
     // set NODE_ENV to --env value
-    if(argv.env){
+    if (argv.env) {
         set('NODE_ENV', argv.env);
     }
 
-    // set NODE_ENV to 'production' if --prod or --production flag set
-    if(argv.production || argv.prod ){
-        set('NODE_ENV', 'production');
-    }
-
-    // load and parse .env file
-    ['./.env'].map(file => {
+    // load evironment files
+    ['./.env', './config/.env', './env', './config/env'].map(file => {
 
         try {
 
-            fs.readFileSync(path.resolve(file), 'utf8').split(/\r\n|\r|\n/g).map(str => {
-
-                if(str){
-                    set.apply(null, str.split('='));
-                }
-
-            });
+            load(file);
 
         } catch(err) {
 
-            if(env('DEBUG')){
-                console.log(`Env: ${err.message}`);
+            if (env('DEBUG')) {
+                console.error(`Env: ${err.message}`);
             }
 
         }
 
     });
 
-    // load .js and .json files
-    ['./env', './config/env'].map(file => {
-
-        try {
-
-            env(require(path.resolve(file)));
-
-        } catch(err) {
-
-            if(env('DEBUG')){
-                console.log(`Env: ${err.message}`);
-            }
-
-        }
-
-    });
-
+    // set default vars
     set('NODE_ENV', 'development');
-    set('DEV', /development/.test(get('NODE_ENV')));
-    set('PROD', /production/.test(get('NODE_ENV')));
+
+    ['DEVELOPMENT', 'PRODUCTION'].map(str => {
+        set(str, get('NODE_ENV') === str.toLowerCase());
+    });
 
 }
 
 init();
 
 module.exports = env;
+module.exports.load = load;
+module.exports.parse = util.parse;

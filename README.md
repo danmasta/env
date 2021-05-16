@@ -57,6 +57,7 @@ Name | Description
 -----|------------
 `get(key)` | Get a value from `process.env`. Will attempt to convert to native type if desired
 `set(key, val)` | Set a value on `process.env`. Will not overwrite already existing values
+`env(key, val)` | Getter/setter function. It proxies to `get` and `set` based on arguments signature
 `loadFromFile(path)` | Load environment variables from a file. Will parse text files in dotenv format or require json or js files
 `loadFromVault(secret, token, addr)` | Attempts to load variables from a [vault](https://www.vaultproject.io/) secret. This method creates a network request using a synchronous worker thread which will block the thread til complete. It has a default timeout of 1 second
 

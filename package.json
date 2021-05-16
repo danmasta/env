@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "author": "Daniel Smith <dannmasta@gmail.com>",
   "description": "Environment variable helper for node apps",
+  "license": "MIT",
   "keywords": [
     "dotenv",
     "env",
@@ -10,27 +11,34 @@
     "config"
   ],
   "main": "index.js",
+  "bin": {},
+  "files": [
+    "index.js",
+    "lib/**/*"
+  ],
   "scripts": {
-    "test": "mocha tests"
+    "test": "./node_modules/.bin/mocha tests",
+    "coverage": "./node_modules/.bin/nyc --reporter=lcov ./node_modules/.bin/mocha tests"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/danmasta/env.git"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-node": "^5.1.1",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "mocha": "^5.0.5"
+    "chai": "^4.3.4",
+    "eslint": "^7.26.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.23.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "mocha": "^8.4.0",
+    "nyc": "^15.1.0"
   },
   "engines": {
-    "npm": ">=3",
-    "node": ">=6"
+    "npm": ">=3"
   },
   "dependencies": {
-    "minimist": "^1.2.0"
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.5"
   }
 }

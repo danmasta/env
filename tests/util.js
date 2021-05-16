@@ -1,8 +1,8 @@
-describe('parse', () => {
+describe('util', () => {
 
     it('should parse env values from strings', () => {
 
-        let res = env.parse(envstr);
+        let res = env.parseEnvStr(envFileContents);
 
         // generic
         expect(res.NODE_ENV).to.equal('test');
@@ -34,6 +34,7 @@ describe('parse', () => {
         expect(res.SPACE7).to.equal('test');
         expect(res.SPACE8).to.equal('test');
         expect(res.SPACE9).to.equal('test ');
+        expect(res.SPACE10).to.equal(' test ');
 
         // expansions
         expect(res.TEST_URL1).to.equal('redis://127.0.0.1:6379');
@@ -47,8 +48,8 @@ describe('parse', () => {
         expect(res.ESCAPED3).to.equal('p@$$w%r^D');
         expect(res.ESCAPED4).to.equal('p@$$@#w%r^D');
         expect(res.ESCAPED5).to.equal('test$test');
-        expect(res.ESCAPED6).to.equal('test\\undefined');
-        expect(res.ESCAPED7).to.equal('test\\test');
+        expect(res.ESCAPED6).to.equal('test');
+        expect(res.ESCAPED7).to.equal('test\test');
         expect(res.ESCAPED8).to.equal('\u{1d306}');
         expect(res.ESCAPED9).to.equal('\u2665');
         expect(res.ESCAPED10).to.equal('\xA5');
@@ -65,8 +66,15 @@ describe('parse', () => {
         expect(res.COMMENT3).to.equal('test #comment');
         expect(res.COMMENT4).to.equal('test #comment');
         expect(res.COMMENT5).to.equal('test#test');
+        expect(res.COMMENT6).to.equal('test ');
 
-        expect(Object.keys(res).length).to.equal(48);
+        // misc
+        expect(res.WINDOWS_PATH).to.equal('C:\\Windows\\system32');
+        expect(res.NEWLINE).to.equal('Some\nValue');
+        expect(res.ESCAPED_UNICODE).to.equal('Copyright \\u00A9');
+        expect(res.WINDOWS_PATH_SPECIAL).to.equal('C:\\special\\chars\\b\\n\\t');
+
+        expect(Object.keys(res).length).to.equal(54);
 
     });
 

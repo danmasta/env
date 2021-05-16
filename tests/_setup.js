@@ -1,16 +1,19 @@
 const chai = require('chai');
-const env = require('../index');
 const path = require('path');
 const fs = require('fs');
+const Env = require('../lib/env');
+const util = require('../lib/util');
 
-const envfile = path.resolve(__dirname, './.env');
-const envstr = fs.readFileSync(envfile).toString();
+const envFilePath = path.resolve(__dirname, './.env');
+const envFileContents = fs.readFileSync(envFilePath).toString();
 
 beforeEach(() => {
     global.assert = chai.assert;
     global.expect = chai.expect;
     global.should = chai.should();
-    global.envstr = envstr;
-    global.env = env;
-    global.envfile = envfile;
+    global.Env = Env;
+    global.env = new Env();
+    global.envFilePath = envFilePath;
+    global.envFileContents = envFileContents;
+    global.util = util;
 });

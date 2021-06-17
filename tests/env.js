@@ -45,12 +45,14 @@ describe('env', () => {
             DIR1: '/home',
             DIR2: '/user',
             DIR3: '/lib',
-            DIR4: '$DIR1$DIR2$DIR3'
+            DIR4: '$DIR1$DIR2$DIR3',
+            DIR6: '$DIR6'
         });
         env.set('DIR5', '$PATH');
 
         expect(env.get('DIR4')).to.equal('/home/user/lib');
         expect(env.get('DIR5')).to.equal(process.env.PATH);
+        expect(env.get('DIR6')).to.equal('');
 
     });
 

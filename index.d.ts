@@ -1,4 +1,4 @@
-declare function env (key: string | object, val?: any, args?: object): string | object | undefined;
+declare function env (key?: string | object, val?: any, args?: object): string | object | number | boolean | null | undefined;
 
 declare namespace env {
 
@@ -27,8 +27,8 @@ declare namespace env {
         constructor (opts?: Subset<EnvOptions>);
         public opts: EnvOptions;
         get (key: string): string | number | boolean | null | undefined;
-        set (key: string | object, val?: string | undefined, args?: object | undefined): object;
-        env (key: string | object, val?: any, args?: object): string | number | boolean | null | undefined;
+        set (key: string | object, val?: string | undefined, args?: object | undefined): string | object | number | boolean | null | undefined;
+        env (key?: string | object, val?: any, args?: object): string | object | number | boolean | null | undefined;
         expandVariables (str: string, vars?: object): string;
         parseEnvStr (str: string, expand?: boolean): object;
         loadFromFile (file: string): object;
@@ -40,10 +40,10 @@ declare namespace env {
     }
 
     export function get (key: string): string | number | boolean | null | undefined;
-    export function set (key: string | object, val?: string | undefined, args?: object | undefined): object;
+    export function set (key: string | object, val?: string | undefined, args?: object | undefined): string | object | number | boolean | null | undefined;
     export function loadFromFile (file: string): object;
     export function loadFromVault (secret?: string, token?: string, addr?: string): void;
-    export function env (key: string | object, val?: any, args?: object): string | number | boolean | null | undefined;
+    export function env (key?: string | object, val?: any, args?: object): string | object | number | boolean | null | undefined;
 
 }
 

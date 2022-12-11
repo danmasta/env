@@ -6,4 +6,3 @@ const env = new Env({
 });
 
 exports = module.exports = env.exports;
-exports.Env = Env;

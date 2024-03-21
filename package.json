@@ -26,21 +26,21 @@
     "type": "git",
     "url": "https://github.com/danmasta/env.git"
   },
-  "devDependencies": {
-    "chai": "^4.3.7",
-    "eslint": "^8.29.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "mocha": "^10.2.0",
-    "nyc": "^15.1.0"
-  },
   "engines": {
     "npm": ">=3"
   },
   "dependencies": {
     "lodash": "^4.17.21",
-    "minimist": "^1.2.7"
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "chai": "^5.1.0",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "mocha": "^10.3.0",
+    "nyc": "^15.1.0"
   }
 }

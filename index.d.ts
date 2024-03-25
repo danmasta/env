@@ -107,15 +107,15 @@ declare class Parser {
 declare class FileResolver {
     constructor (opts?: Subset<FileResolverDefaults>);
     opts: FileResolverDefaults;
-    refresh (opts?: object): void;
+    refresh (opts?: Subset<FileResolverDefaults>): void;
     resolvePath (str: string): string;
     resolvePathIfExists (str: string): string;
     requireImportOrRead (str: str): Promise<object|string>|object|string;
-    resolveConditional (async?: boolean): Promise<Array<object>>|Array<object>;
-    resolve (): Array<object>;
-    resolveAsync (): Promise<Array<object>>;
+    resolveConditional (async?: boolean): Promise<object[]>|object[];
+    resolve (): object[];
+    resolveAsync (): Promise<object[]>;
     getFileList (): object[];
-    formatSettledFiles (arr: object[]): Array<object>;
+    formatSettledFiles (arr: object[]): object[];
 }
 
 export class Env {
@@ -134,7 +134,7 @@ export class Env {
     public get exports (): ExportsFn;
     static get defaults(): EnvDefaults;
     static get constants(): EnvConstants;
-    static factory (...args: unknown[]): FactoryFn;
+    static factory (...args?: unknown[]): FactoryFn;
 }
 
 export const get: GetFn;

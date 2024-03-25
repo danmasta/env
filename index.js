@@ -1,8 +1,10 @@
 const Env = require('./lib/env');
 
 const env = new Env({
-    filePaths: ['./.env', './config/.env', './env', './config/env'],
+    files: ['./.env', './config/.env', './env', './config/env'],
     enableArgv: true
 });
 
-exports = module.exports = env.exports;
+env.resolve();
+
+module.exports = env.exports;

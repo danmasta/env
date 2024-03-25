@@ -2,7 +2,7 @@ describe('util', () => {
 
     it('should parse env values from strings', () => {
 
-        let res = env.parseEnvStr(envFileContents);
+        let res = env.parser.parse(envstr);
 
         // generic
         expect(res.NODE_ENV).to.equal('test');

@@ -2,7 +2,7 @@ describe('helpers', () => {
 
     it('should set helper vars', () => {
 
-        let env = new Env({ setHelpers: true, setNodeEnv: true });
+        let env = new Env({ helpers: true, setNodeEnv: true });
 
         expect(env.get('NODE_ENV')).to.exist;
         expect(env.get('DEVELOPMENT')).to.exist;

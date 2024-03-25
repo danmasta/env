@@ -2,11 +2,13 @@ describe('load', () => {
 
     it('should load env variables from file path', () => {
 
-        env.loadFromFile(envFilePath);
+        let env = new Env({
+            files: path.resolve(__dirname, './.env.env')
+        });
 
-        expect(env.get('NODE_ENV')).to.equal('test');
-        expect(env.get('TEST_HOST')).to.equal('127.0.0.1');
-        expect(env.get('TEST_PORT')).to.equal(6379);
+        env.resolve();
+
+        expect(env.get('ENV_TEST_LOAD_FILE')).to.equal('test');
 
     });
 

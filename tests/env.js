@@ -2,16 +2,12 @@ describe('env', () => {
 
     it('should get env variables', () => {
 
-        env.loadFromFile(envFilePath);
-
         expect(env.get('NODE_ENV')).to.equal('test');
         expect(env.get('TEST_HOST')).to.equal('127.0.0.1');
 
     });
 
     it('should set env variables that are not set', () => {
-
-        env.loadFromFile(envFilePath);
 
         env.set('NODE_ENV', 'development');
         env.set('NODE_TEST1', 1);
@@ -25,8 +21,6 @@ describe('env', () => {
     });
 
     it('should coerce to native types', () => {
-
-        env.loadFromFile(envFilePath);
 
         expect(env.get('TRUE')).to.be.true;
         expect(env.get('FALSE')).to.be.false;

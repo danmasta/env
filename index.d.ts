@@ -1,21 +1,35 @@
-export interface EnvDefaults {
-    nativeType: boolean;
-    setNodeEnv: boolean;
-    setHelpers: boolean;
-    filePaths: string | Array<string>;
-    enableArgv: boolean;
-    encoding: string | null;
-    timeout: number;
-    replaceMissing: boolean;
-    default: string;
+interface EnvDefaults {
+    nativeType: boolean,
+    setNodeEnv: boolean,
+    helpers: boolean,
+    files: string|string[],
+    dir: string,
+    enableArgv: boolean,
+    encoding: string|null,
+    timeout: number,
+    replaceMissing: boolean,
+    default: string,
     vault: {
-        secret: string;
-        token: string;
-        addr: string;
-    }
+        secret: string,
+        token: string,
+        addr: string,
+    },
+    warn: boolean,
+    throw: boolean
 }
 
-export interface EnvConstants {
+interface ParserDefaults {
+    replaceMissing: boolean,
+    default: string
+}
+
+interface FileResolverDefaults {
+    encoding: string,
+    dir: string,
+    files: string|string[]
+}
+
+interface EnvConstants {
     TYPES: {
         true: boolean,
         false: boolean,
@@ -38,7 +52,7 @@ export interface EnvConstants {
     },
     REGEX: {
         newline: RegExp,
-        envfile: RegExp,
+        envext: RegExp,
         args: RegExp,
         quotes: RegExp,
         unescape: RegExp
@@ -47,22 +61,18 @@ export interface EnvConstants {
 
 type Subset<T> = Partial<{
     [P in keyof T]: T[P] extends object ? Subset<T[P]> : T[P]
-}>;
+}>
 
 type GetFn = {
-    (key: string): string | number | boolean | null | undefined;
+    (key: string): string|number|boolean|null|undefined;
 }
 
 type SetFn = {
-    (key: string | object, val?: any, args?: object | undefined): any;
+    (key: string|object, val?: unknown, args?: object|undefined): unknown;
 }
 
 type EnvFn = {
-    (key: string | object, val?: any): any;
-}
-
-type LoadFromFileFn = {
-    (file: string): object;
+    (key: string|object, val?: unknown): unknown;
 }
 
 type LoadFromVaultFn = {
@@ -70,11 +80,11 @@ type LoadFromVaultFn = {
 }
 
 type ExportsFn = EnvFn & {
+    default: ExportsFn;
     get: GetFn;
     set: SetFn;
-    env: EnvFn;
+    env: ExportsFn;
     Env: typeof Env;
-    loadFromFile: LoadFromFileFn;
     loadFromVault: LoadFromVaultFn;
 }
 
@@ -82,27 +92,56 @@ type FactoryFn = {
     (opts?: Subset<EnvDefaults>): Env;
 }
 
+// https://github.com/DefinitelyTyped/DefinitelyTyped/blob/6918081f66a51df9eab940d9b690d627467c4401/types/node/process.d.ts#L138
+interface ProcessEnv extends Dict<string>{
+
+}
+
+declare class Parser {
+    constructor (opts?: Subset<ParserDefaults>);
+    opts: ParserDefaults;
+    expandVariables (str: string, vars?: object): string;
+    parse (str: string, expand?: boolean): object;
+}
+
+declare class FileResolver {
+    constructor (opts?: Subset<FileResolverDefaults>);
+    opts: FileResolverDefaults;
+    refresh (opts?: object): void;
+    resolvePath (str: string): string;
+    resolvePathIfExists (str: string): string;
+    requireImportOrRead (str: str): Promise<object|string>|object|string;
+    resolveConditional (async?: boolean): Promise<Array<object>>|Array<object>;
+    resolve (): Array<object>;
+    resolveAsync (): Promise<Array<object>>;
+    getFileList (): object[];
+    formatSettledFiles (arr: object[]): Array<object>;
+}
+
 export class Env {
     constructor (opts?: Subset<EnvDefaults>);
-    _opts: EnvDefaults;
+    opts: EnvDefaults;
+    parser: Parser;
+    resolver: FileResolver;
     get: GetFn;
     set: SetFn;
     env: EnvFn;
-    expandVariables (str: string, vars?: object): string;
-    parseEnvStr (str: string, expand?: boolean): object;
-    loadFromFile: LoadFromFileFn;
+    resolveConditional (async?: boolean): Promise<ProcessEnv>|ProcessEnv;
+    resolve (): ProcessEnv;
+    resolveAsync (): Promise<ProcessEnv>;
     loadFromVault: LoadFromVaultFn;
+    handleError (err: Error): void;
     public get exports (): ExportsFn;
-    static defaults: EnvDefaults;
-    static constants: EnvConstants;
-    static factory (...args: any[]): FactoryFn;
+    static get defaults(): EnvDefaults;
+    static get constants(): EnvConstants;
+    static factory (...args: unknown[]): FactoryFn;
 }
 
 export const get: GetFn;
 export const set: SetFn;
-export const env: EnvFn;
-export const loadFromFile: LoadFromFileFn;
+export const env: ExportsFn;
 export const loadFromVault: LoadFromVaultFn;
 
-declare const _env: Env;
-export default _env.exports;
+declare const mod: Env;
+
+export default mod.exports.default;

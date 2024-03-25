@@ -1,4 +1,4 @@
-interface EnvDefaults {
+interface Defaults {
     nativeType: boolean,
     setNodeEnv: boolean,
     helpers: boolean,
@@ -29,7 +29,7 @@ interface FileResolverDefaults {
     files: string|string[]
 }
 
-interface EnvConstants {
+interface Constants {
     TYPES: {
         true: boolean,
         false: boolean,
@@ -89,7 +89,7 @@ type ExportsFn = EnvFn & {
 }
 
 type FactoryFn = {
-    (opts?: Subset<EnvDefaults>): Env;
+    (opts?: Subset<Defaults>): Env;
 }
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/6918081f66a51df9eab940d9b690d627467c4401/types/node/process.d.ts#L138
@@ -102,6 +102,8 @@ declare class Parser {
     opts: ParserDefaults;
     expandVariables (str: string, vars?: object): string;
     parse (str: string, expand?: boolean): object;
+    static get defaults(): ParserDefaults;
+    static get constants(): Constants;
 }
 
 declare class FileResolver {
@@ -116,11 +118,12 @@ declare class FileResolver {
     resolveAsync (): Promise<object[]>;
     getFileList (): object[];
     formatSettledFiles (arr: object[]): object[];
+    static get defaults(): FileResolverDefaults;
 }
 
 export class Env {
-    constructor (opts?: Subset<EnvDefaults>);
-    opts: EnvDefaults;
+    constructor (opts?: Subset<Defaults>);
+    opts: Defaults;
     parser: Parser;
     resolver: FileResolver;
     get: GetFn;
@@ -132,8 +135,7 @@ export class Env {
     loadFromVault: LoadFromVaultFn;
     handleError (err: Error): void;
     public get exports (): ExportsFn;
-    static get defaults(): EnvDefaults;
-    static get constants(): EnvConstants;
+    static get defaults(): Defaults;
     static factory (...args?: unknown[]): FactoryFn;
 }
 

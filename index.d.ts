@@ -102,8 +102,8 @@ declare class Parser {
     opts: ParserDefaults;
     expandVariables (str: string, vars?: object): string;
     parse (str: string, expand?: boolean): object;
-    static get defaults(): ParserDefaults;
-    static get constants(): Constants;
+    static get defaults (): ParserDefaults;
+    static get constants (): Constants;
 }
 
 declare class FileResolver {
@@ -118,7 +118,7 @@ declare class FileResolver {
     resolveAsync (): Promise<object[]>;
     getFileList (): object[];
     formatSettledFiles (arr: object[]): object[];
-    static get defaults(): FileResolverDefaults;
+    static get default (): FileResolverDefaults;
 }
 
 export class Env {
@@ -135,7 +135,7 @@ export class Env {
     loadFromVault: LoadFromVaultFn;
     handleError (err: Error): void;
     public get exports (): ExportsFn;
-    static get defaults(): Defaults;
+    static get defaults (): Defaults;
     static factory (...args?: unknown[]): FactoryFn;
 }
 

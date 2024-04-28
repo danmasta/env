@@ -2,7 +2,8 @@ import Env from './lib/env.js';
 
 const mod = new Env({
     files: ['./.env', './config/.env', './env', './config/env'],
-    enableArgv: true
+    enableArgv: true,
+    helpers: true
 });
 
 await mod.resolveConditional();

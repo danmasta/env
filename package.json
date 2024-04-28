@@ -20,9 +20,13 @@
     "**/*.d.ts"
   ],
   "exports": {
-    "import": "./index.mjs",
-    "require": "./index.js",
-    "types": "./index.d.ts"
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./*": "./lib/*.js",
+    "./lib/*": "./lib/*.js"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha tests",

@@ -12,6 +12,7 @@ Features:
 * Bash-like [variable expansion](#variable-expansion) via `$var` or `${var}`
 * Full [character escape sequence](#escape-sequences) support (unicode, hex, octal, single)
 * Start of line and end of line [comments](#comments) are supported
+* Support for multiline values
 * Support for loading variables from [vault](https://www.vaultproject.io/)
 * Support for ESM
 

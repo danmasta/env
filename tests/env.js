@@ -28,6 +28,8 @@ describe('env', () => {
         expect(env.get('UNDEFINED')).to.be.undefined;
         expect(env.get('NAN')).to.be.NaN;
         expect(env.get('NUMBER')).to.be.a('number');
+        expect(env.get('BIGINT')).to.equal('90071992547409916');
+        expect(env.get('BIGINT_NEGATIVE')).to.equal('-90071992547409916');
 
     });
 

@@ -79,7 +79,7 @@ describe('util', () => {
         expect(res.MULTILINE2).to.equal('-----BEGIN PRIVATE KEY-----\n0000000000000000000000000000000000000000000000000000000000000000\n1111111111111111111111111111111111111111111111111111111111111111\n0000000000000000000000000000000000000000000000000000000000000000\n-----END PRIVATE KEY-----');
         expect(res.TEST_END).to.equal('end');
 
-        expect(Object.keys(res).length).to.equal(57);
+        expect(Object.keys(res).length).to.equal(59);
 
     });
 

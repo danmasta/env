@@ -1,10 +1,12 @@
-describe('util', () => {
+import { parse } from '../lib/util.js';
+
+describe('Util', () => {
 
     it('should parse env values from strings', () => {
 
-        let res = env.parser.parse(envstr);
+        let res = parse(envstr);
 
-        // generic
+        // Generic
         expect(res.NODE_ENV).to.equal('test');
         expect(res.TEST_HOST).to.equal('127.0.0.1');
         expect(res.TEST_PORT).to.equal('6379');
@@ -15,16 +17,16 @@ describe('util', () => {
         expect(res.UNDEFINED).to.equal('undefined');
         expect(res.NAN).to.equal('NaN');
 
-        // numbers
+        // Numbers
         expect(res.NUMBER).to.equal('9000');
 
-        // strings
+        // Strings
         expect(res.STRING1).to.equal('string');
         expect(res.STRING2).to.equal('string with spaces');
         expect(res.STRING3).to.equal('string with double quotes');
         expect(res.STRING4).to.equal('string with single quotes');
 
-        // whitespace
+        // Whitespace
         expect(res.SPACE1).to.equal('test');
         expect(res.SPACE2).to.equal('test');
         expect(res.SPACE3).to.equal('test');
@@ -36,13 +38,13 @@ describe('util', () => {
         expect(res.SPACE9).to.equal('test ');
         expect(res.SPACE10).to.equal(' test ');
 
-        // expansions
+        // Expansion
         expect(res.TEST_URL1).to.equal('redis://127.0.0.1:6379');
         expect(res.TEST_URL2).to.equal('redis://127.0.0.1:6379');
         expect(res.TEST_URL3).to.equal('redis://127.0.0.1:6379');
         expect(res.TEST_URL4).to.equal('redis://127.0.0.1:6379');
 
-        // escapes
+        // Escapes
         expect(res.ESCAPED1).to.equal('$ESCAPED');
         expect(res.ESCAPED2).to.equal('Copyright \u00A9');
         expect(res.ESCAPED3).to.equal('p@$$w%r^D');
@@ -53,14 +55,15 @@ describe('util', () => {
         expect(res.ESCAPED8).to.equal('\u{1d306}');
         expect(res.ESCAPED9).to.equal('\u2665');
         expect(res.ESCAPED10).to.equal('\xA5');
-        expect(res.ESCAPED11).to.equal('\1');
-        expect(res.ESCAPED12).to.equal('\01');
-        expect(res.ESCAPED13).to.equal('\001');
+        // Need to test octal escapes with hex
+        expect(res.ESCAPED11).to.equal('\x01');
+        expect(res.ESCAPED12).to.equal('\x01');
+        expect(res.ESCAPED13).to.equal('\x01');
         expect(res.ESCAPED14).to.equal('\b');
         expect(res.ESCAPED15).to.equal('\t');
         expect(res.ESCAPED16).to.equal('\0');
 
-        // comments
+        // Comments
         expect(res.COMMENT1).to.equal('test');
         expect(res.COMMENT2).to.equal('test #comment');
         expect(res.COMMENT3).to.equal('test #comment');
@@ -68,17 +71,18 @@ describe('util', () => {
         expect(res.COMMENT5).to.equal('test#test');
         expect(res.COMMENT6).to.equal('test ');
 
-        // misc
+        // Misc
         expect(res.WINDOWS_PATH).to.equal('C:\\Windows\\system32');
         expect(res.NEWLINE).to.equal('Some\nValue');
         expect(res.ESCAPED_UNICODE).to.equal('Copyright \\u00A9');
         expect(res.WINDOWS_PATH_SPECIAL).to.equal('C:\\special\\chars\\b\\n\\t');
 
-        // multiline
+        // Multiline
         expect(res.MULTILINE1).to.equal('-----BEGIN PRIVATE KEY-----\n0000000000000000000000000000000000000000000000000000000000000000\n1111111111111111111111111111111111111111111111111111111111111111\n0000000000000000000000000000000000000000000000000000000000000000\n-----END PRIVATE KEY-----');
         expect(res.MULTILINE2).to.equal('-----BEGIN PRIVATE KEY-----\n0000000000000000000000000000000000000000000000000000000000000000\n1111111111111111111111111111111111111111111111111111111111111111\n0000000000000000000000000000000000000000000000000000000000000000\n-----END PRIVATE KEY-----');
         expect(res.TEST_END).to.equal('end');
 
+        // Count
         expect(Object.keys(res).length).to.equal(59);
 
     });

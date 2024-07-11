@@ -1,4 +1,4 @@
-describe('env', () => {
+describe('Env', () => {
 
     it('should get env variables', () => {
 

@@ -1,27 +1,19 @@
-const path = require('path');
-const fs = require('fs');
-const Env = require('../lib/env');
-const util = require('../lib/util');
+import { assert, expect, should } from 'chai';
+import { readFile } from 'node:fs/promises';
+import Env from '../lib/env.js';
 
-const envpath = path.resolve(__dirname, './.env');
-const envstr = fs.readFileSync(envpath, 'utf8');
-
+const envstr = await readFile('./tests/.env', 'utf8');
 const env = new Env({
-    files: envpath
+    files: './tests/.env'
 });
 
-env.resolve();
+await env.resolve();
 
 beforeEach(() => {
-    return import('chai').then(chai => {
-        global.assert = chai.assert;
-        global.expect = chai.expect;
-        global.should = chai.should();
-        global.Env = Env;
-        global.env = env;
-        global.envpath = envpath;
-        global.envstr = envstr;
-        global.util = util;
-        global.path = path;
-    });
+    global.assert = assert;
+    global.expect = expect;
+    global.should = should();
+    global.Env = Env;
+    global.env = env;
+    global.envstr = envstr;
 });

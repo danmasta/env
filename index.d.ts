@@ -31,15 +31,15 @@ type SetFn = {
 }
 
 type EnvFn = {
-    (key: string|object, val?: unknown): unknown;
+    (key: string|object, val?: unknown, args?: object): unknown;
 }
 
 type LoadFromVaultFn = {
-    (secret?: string, token?: string, addr?: string): Promise<void>;
+    (secret?: string|object, opts?: { secret?: string, token?: string, addr?: string, timeout?: number }): Promise<void>;
 }
 
 type LoadFromVaultSyncFn = {
-    (secret?: string, token?: string, addr?: string): void;
+    (secret?: string|object, opts?: { secret?: string, token?: string, addr?: string, timeout?: number }): void;
 }
 
 type ExportsFn = EnvFn & {

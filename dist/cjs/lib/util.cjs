@@ -157,7 +157,7 @@ function unixify (str) {
 
 async function spawnWorker (opts={}) {
     return await new Promise((resolve, reject) => {
-        let child = node_child_process.spawn('node', [constants.PATHS.vaultWorker], opts);
+        let child = node_child_process.spawn(process.execPath, [constants.PATHS.vaultWorker], opts);
         let stderr = '';
         let stdout = '';
         let error;
@@ -194,7 +194,7 @@ function spawnWorkerSync (opts={}) {
         pid,
         status,
         signal
-    } = node_child_process.spawnSync('node', [constants.PATHS.vaultWorker], opts);
+    } = node_child_process.spawnSync(process.execPath, [constants.PATHS.vaultWorker], opts);
     return {
         stderr: ('' + stderr).trim(),
         stdout: ('' + stdout).trim(),

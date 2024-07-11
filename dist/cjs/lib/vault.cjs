@@ -62,7 +62,6 @@ function getVaultSecretSync (path, opts={}) {
     let { secret, token, addr, timeout } = lo.defaults(opts, defs);
     let { stderr, stdout, err } = util.spawnWorkerSync({
         env: {
-            PATH: lo.env('PATH'),
             ENV_VAULT_WORKER_OPTS: JSON.stringify({ secret, token, addr, timeout })
         },
         timeout

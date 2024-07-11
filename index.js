@@ -1,11 +1,14 @@
-const Env = require('./lib/env');
+import Env from './lib/env.js';
 
-const env = new Env({
-    files: ['./.env', './config/.env', './env', './config/env'],
-    enableArgv: true,
-    helpers: true
-});
+export const {
+    get,
+    set,
+    env,
+    loadFromVault,
+    loadFromVaultSync
+} = await new Env().resolve();
 
-env.resolve();
-
-module.exports = env.exports;
+export {
+    env as default,
+    Env
+};

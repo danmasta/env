@@ -2,7 +2,7 @@
   "name": "@danmasta/env",
   "version": "4.1.1",
   "author": "Daniel Smith <dannmasta@gmail.com>",
-  "description": "Environment variable helper for node apps",
+  "description": "Environment helper for node apps",
   "license": "MIT",
   "keywords": [
     "dotenv",
@@ -11,46 +11,49 @@
     "config"
   ],
   "main": "index.js",
+  "type": "module",
   "types": "index.d.ts",
-  "bin": {},
   "files": [
     "index.js",
-    "index.mjs",
+    "dist/**/*",
     "lib/**/*",
     "**/*.d.ts"
   ],
   "exports": {
     ".": {
-      "import": "./index.mjs",
-      "require": "./index.js",
-      "types": "./index.d.ts"
+      "import": "./index.js",
+      "require": "./dist/cjs/index.cjs"
     },
-    "./*": "./lib/*.js",
-    "./lib/*": "./lib/*.js"
+    "./env": {
+      "import": "./lib/env.js",
+      "require": "./dist/cjs/lib/env.cjs"
+    }
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha tests",
-    "coverage": "./node_modules/.bin/nyc --reporter=lcov ./node_modules/.bin/mocha tests"
+    "test": "make test",
+    "coverage": "make coverage",
+    "build": "make build",
+    "watch": "make watch",
+    "preversion": "make test build status"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/danmasta/env.git"
   },
-  "engines": {
-    "npm": ">=3"
-  },
   "dependencies": {
-    "lodash": "^4.17.21",
+    "@danmasta/lo": "github:danmasta/lo#7fc28a0",
     "minimist": "^1.2.8"
   },
   "devDependencies": {
-    "chai": "^5.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.7",
+    "c8": "^10.1.2",
+    "chai": "^5.1.1",
     "eslint": "^8.57.0",
-    "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "mocha": "^10.3.0",
-    "nyc": "^15.1.0"
+    "eslint-plugin-promise": "^6.2.0",
+    "mocha": "^10.5.2",
+    "rollup": "^4.18.0"
   }
 }

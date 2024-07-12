@@ -122,7 +122,7 @@ REDIS_URL=redis://$HOST:$PORT # Expanded redis url
 ```
 If you want to use the `#` symbol in a string, just wrap the string in single or double quotes:
 ```bash
-COMMENT='This #comment will not be stripped'
+TEST='This #comment will not be stripped'
 ```
 
 ## Load Additional Files
@@ -168,17 +168,17 @@ loadFromVaultSync('/env/app/prod');
 ```
 
 ## Examples
-#### Set a single value
-```js
-env('NODE_ENV', 'development');
-```
-
-#### Get a value
+#### Get an environment variable
 ```js
 env('NODE_ENV');
 ```
 
-#### Set multiple values
+#### Set an environment variable
+```js
+env('NODE_ENV', 'development');
+```
+
+#### Set multiple environment variables
 ```js
 env({
     REDIS_HOST: '127.0.0.1',
@@ -186,7 +186,7 @@ env({
 });
 ```
 
-#### Load extra env files
+#### Load extra environment files
 ```js
 let env = new Env({
     files: './config/production/.env'
@@ -195,10 +195,10 @@ let env = new Env({
 await env.resovle();
 ```
 
-#### Load env variables from vault
+#### Load environment variables from vault
 ```bash
 export VAULT_TOKEN="$TOKEN"
-export VAULT_ADDR="https://vault.tld.net"
+export VAULT_ADDR="https://vault.example.net"
 ```
 ```js
 await env.loadFromVault('/env/app/prod');

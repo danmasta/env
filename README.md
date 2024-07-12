@@ -263,5 +263,8 @@ env('DEVELOPMENT'); // true if NODE_ENV === 'development' otherwise false
 env('PRODUCTION'); // true if NODE_ENV === 'production' otherwise false
 ```
 
+## Testing
+Tests are currently run using mocha and chai. To execute tests run `make test`. To generate unit test coverage reports run `make coverage`
+
 ## Contact
 If you have any questions feel free to get in touch

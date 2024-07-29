@@ -15,6 +15,7 @@ Environment helper for node apps
 * Support for multiline values
 * Support for loading variables from [vault](#load-variables-from-vault)
 * Native esm and cjs support
+* 0 external dependencies
 
 ## About
 I wanted a better way to interact with environment variables in node apps. This package aims to simplify the process while maintaining `process.env` as the source of truth. It can parse variables from `.env`, `.js`, `.json`, `.cjs`, or `.mjs` files, and it can also import variables from [vault](https://github.com/hashicorp/vault) secrets. It supports type casting so you can use variables with boolean or number values as their native types. Variable expansion, multiline values, comments, and full character escape sequences are also supported.

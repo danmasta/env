@@ -1,10 +1,10 @@
-import { parse } from '../lib/util.js';
+import { parseEnvStr } from '../lib/util.js';
 
 describe('Util', () => {
 
     it('should parse env values from strings', () => {
 
-        let res = parse(envstr);
+        let res = parseEnvStr(envstr);
 
         // Generic
         expect(res.NODE_ENV).to.equal('test');

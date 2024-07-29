@@ -29,8 +29,7 @@ export default [
         ],
         external: [
             '@danmasta/lo',
-            '@danmasta/lo/errors',
-            'minimist'
+            '@danmasta/lo/errors'
         ]
     }
 ];

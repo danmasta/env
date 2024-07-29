@@ -41,8 +41,7 @@
     "url": "https://github.com/danmasta/env.git"
   },
   "dependencies": {
-    "@danmasta/lo": "github:danmasta/lo#7fc28a0",
-    "minimist": "^1.2.8"
+    "@danmasta/lo": "github:danmasta/lo#76a7270"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.2.3",
@@ -52,8 +51,8 @@
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.2.0",
-    "mocha": "^10.5.2",
-    "rollup": "^4.18.0"
+    "eslint-plugin-promise": "^7.0.0",
+    "mocha": "^10.7.0",
+    "rollup": "^4.19.1"
   }
 }

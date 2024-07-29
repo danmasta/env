@@ -42,8 +42,8 @@ const REGEX = {
 
 const PATHS = {
     lib,
-    vaultWorker: lo.resolvePath('./vault-worker.cjs', lib),
-    vaultToken: lo.resolvePath('~/.vault-token')
+    vaultWorker: lo.resolve('./vault-worker.cjs', lib),
+    vaultToken: lo.resolve('~/.vault-token')
 };
 
 exports.PATHS = PATHS;

@@ -1,8 +1,9 @@
 var lo = require('@danmasta/lo');
 var errors = require('@danmasta/lo/errors');
-var process = require('node:process');
 var util = require('./util.cjs');
 var vault = require('./vault.cjs');
+
+const argv = lo.parseArgv(lo.ARGV.slice(2));
 
 const defs = {
     enableArgv: true,
@@ -29,44 +30,56 @@ class Env {
     constructor (opts) {
         this.opts = opts = lo.defaults(opts, defs);
         if (opts.enableArgv) {
-            this.set('NODE_ENV', util.argv['node-env']);
-            this.set(util.parseParamString(util.argv['env']));
+            this.set('NODE_ENV', argv['node-env']);
+            this.set(util.parseParamStr(argv['env']));
         }
     }
 
     get (key) {
-        let val = process.env[key];
         if (this.opts.nativeType) {
-            return util.toNativeType(val);
+            return lo.toNativeType(lo.ENV[key]);
         }
-        return val;
+        return lo.ENV[key];
     }
 
     set (key, val, args) {
-        if (lo.isString(key)) {
-            let { replace, default: def } = this.opts;
-            val = util.expandVars(val, args, replace, def);
-            if (lo.notNil(val) && lo.isNilEnv(process.env[key])) {
-                return process.env[key] = val;
-            }
-            return this.get(key);
+        switch (arguments.length) {
+            case 1:
+                if (lo.isObject(key)) {
+                    lo.forOwn(key, (v, k, args) => {
+                        this.set(k, v, args);
+                    });
+                }
+                return lo.ENV;
+            case 2:
+            case 3:
+                let { replace, default: def, nativeType } = this.opts;
+                let v = lo.ENV[key];
+                val = util.expandVars(val, args, replace, def);
+                if (lo.isNilEnv(v)) {
+                    return lo.ENV[key] = val;
+                }
+                if (nativeType) {
+                    return lo.toNativeType(v);
+                }
+                return v;
         }
-        if (lo.isObject(key)) {
-            lo.forOwn(key, (val, key, args) => {
-                this.set(key, val, args);
-            });
-        }
-        return process.env;
     }
 
     env (key, val, args) {
-        if (arguments.length >= 2 || lo.isObject(key)) {
-            return this.set(key, val, args);
+        switch (arguments.length) {
+            case 1:
+                if (lo.isString(key)) {
+                    return this.get(key);
+                } else {
+                    return this.set(key);
+                }
+            case 2:
+            case 3:
+                return this.set(key, val, args);
+            default:
+                return lo.ENV;
         }
-        if (lo.isString(key)) {
-            return this.get(key);
-        }
-        return process.env;
     }
 
     setHelpers () {
@@ -99,7 +112,7 @@ class Env {
                 if (lo.isModule(contents)) {
                     this.set(contents.default);
                 } else if (lo.isString(contents)) {
-                    this.set(util.parse(contents, false, replace, def));
+                    this.set(util.parseEnvStr(contents, false, replace, def));
                 } else {
                     this.set(contents);
                 }
@@ -126,7 +139,7 @@ class Env {
                 if (lo.isModule(contents)) {
                     this.set(contents.default);
                 } else if (lo.isString(contents)) {
-                    this.set(util.parse(contents, false, replace, def));
+                    this.set(util.parseEnvStr(contents, false, replace, def));
                 } else {
                     this.set(contents);
                 }

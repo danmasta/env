@@ -1,11 +1,8 @@
 var lo = require('@danmasta/lo');
-var minimist = require('minimist');
 var node_child_process = require('node:child_process');
 var process = require('node:process');
 var node_util = require('node:util');
 var constants = require('./constants.cjs');
-
-const argv = minimist(process.argv.slice(2));
 
 class EnvError extends Error {
     constructor (...args) {
@@ -17,19 +14,6 @@ class EnvError extends Error {
     static get code () {
         return 'ERR_ENV';
     }
-}
-
-function toNativeType (val) {
-    if (lo.hasOwn(constants.TYPES, val)) {
-        return constants.TYPES[val];
-    }
-    if (lo.isNumeric(val)) {
-        if (val > Number.MAX_SAFE_INTEGER || val < Number.MIN_SAFE_INTEGER) {
-            return val;
-        }
-        return parseFloat(val);
-    }
-    return val;
 }
 
 // https://mathiasbynens.be/notes/javascript-escapes
@@ -75,12 +59,12 @@ function stripCommentAndQuotes (str) {
     return str;
 }
 
-function parseParamString (str) {
+function parseParamStr (str) {
     try {
         return JSON.parse(str);
     } catch {
         let pairs = lo.map(lo.split(str, ','), str => {
-            return lo.split(str, '=', 1, true);
+            return lo.split(str, '=', { limit: 1, trim: true });
         });
         return lo.fromPairs(pairs);
     }
@@ -98,12 +82,12 @@ function expandVars (str, vars, replace=1, def='') {
         if (match[0] === '\\') {
             return match.slice(1);
         }
-        if (lo.isNilEnv(process.env[key])) {
+        if (lo.isNilEnv(lo.ENV[key])) {
             if (vars) {
                 val = expandVars(vars[key], undefined, replace, def);
             }
         } else {
-            val = process.env[key];
+            val = lo.ENV[key];
         }
         if (val === undefined) {
             if (replace) {
@@ -116,22 +100,21 @@ function expandVars (str, vars, replace=1, def='') {
     });
 }
 
-function parse (str, expand=1, replace=1, def='') {
+function parseEnvStr (str, expand=1, replace=1, def='') {
     let res = {};
     let prev;
     if (!lo.isString(str)) {
         return res;
     }
-    str.split(constants.REGEX.newline).forEach(line => {
-        line = line.trim();
+    lo.each(lo.split(str, constants.REGEX.newline, { trim: true }), line => {
         // Ignore comments
-        if (!line || line[0] === '#') {
+        if (line[0] === '#') {
             return;
         }
         if (expand) {
             line = expandVars(line, res, replace, def);
         }
-        let { 0: key, 1: val='' } = lo.split(line, '=', 1, true);
+        let [key, val = ''] = lo.split(line, '=', { limit: 1, trim: true });
         // Support multiline values
         if (!val && key.length === line.length) {
             val = key, key = null;
@@ -206,15 +189,13 @@ function spawnWorkerSync (opts={}) {
 }
 
 exports.EnvError = EnvError;
-exports.argv = argv;
 exports.expandVars = expandVars;
-exports.parse = parse;
-exports.parseParamString = parseParamString;
+exports.parseEnvStr = parseEnvStr;
+exports.parseParamStr = parseParamStr;
 exports.spawnWorker = spawnWorker;
 exports.spawnWorkerSync = spawnWorkerSync;
 exports.stripCommentAndQuotes = stripCommentAndQuotes;
 exports.stripLineComment = stripLineComment;
 exports.stripQuotes = stripQuotes;
-exports.toNativeType = toNativeType;
 exports.unescape = unescape;
 exports.unixify = unixify;

@@ -23,12 +23,16 @@ I wanted a better way to interact with environment variables in node apps. This 
 ## Usage
 Add env as a dependency for your app and install via npm
 ```bash
-npm install @danmasta/env --save
+npm install env@danmasta/env --save
+```
+Install a specific [version](https://github.com/danmasta/env/tags)
+```bash
+npm install env@danmasta/env#v5.2.0 --save
 ```
 
 Import or require the package in your app
 ```js
-import env from '@danmasta/env';
+import env from 'env';
 ```
 
 Get an environment variable
@@ -139,7 +143,7 @@ await env.resovle();
 ## Load Variables from [Vault](https://github.com/hashicorp/vault)
 This package also supports loading environment variables from vault. It will attempt to read the variables from a vault secret path, then parse the key/value pairs and set them in the environment. The vault api HTTP requests can be made asynchronously, or synchronously via a worker thread that has a default timeout of `2.5 seconds`.
 ```js
-import { loadFromVault } from '@danmasta/env';
+import { loadFromVault } from 'env';
 
 let token = '$VAULT_TOKEN';
 let addr = '$VAULT_ADDR';
@@ -163,7 +167,7 @@ await loadFromVault('/env/data/app/prod');
 ### Sync
 If your app is still `cjs` and/or doesn't support top level `await`, and you need to load variables from vault synchronously, you can do that too:
 ```js
-const { loadFromVaultSync } = require('@danmasta/env');
+const { loadFromVaultSync } = require('env');
 
 loadFromVaultSync('/env/app/prod');
 ```
@@ -218,7 +222,7 @@ export default {
 If you use a [config library](https://github.com/danmasta/config) that supports loading `js` files you can use this package to load environment variables based on your config settings:
 ```js
 // ./config/local.js
-import { loadFromVault } from '@danmasta/env';
+import { loadFromVault } from 'env';
 
 await loadFromVault('/env/app/local');
 
@@ -228,7 +232,7 @@ export default {
 
 
 // ./config/development.js
-import { loadFromVault } from '@danmasta/env';
+import { loadFromVault } from 'env';
 
 await loadFromVault('/env/app/dev');
 
@@ -238,7 +242,7 @@ export default {
 
 
 // ./config/production.js
-import { loadFromVault } from '@danmasta/env';
+import { loadFromVault } from 'env';
 
 await loadFromVault('/env/app/prod');
 
@@ -248,8 +252,8 @@ export default {
 
 
 // ./app.js
-import env from '@danmata/env';
-import config from '@danmasta/config';
+import env from 'env';
+import config from 'config';
 
 app.listen(...);
 ```

@@ -41,7 +41,7 @@
     "url": "https://github.com/danmasta/env.git"
   },
   "dependencies": {
-    "@danmasta/lo": "github:danmasta/lo#76a7270"
+    "lo": "github:danmasta/lo#af3c167"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.2.3",

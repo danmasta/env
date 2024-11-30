@@ -28,8 +28,8 @@ export default [
             })
         ],
         external: [
-            '@danmasta/lo',
-            '@danmasta/lo/errors'
+            'lo',
+            'lo/errors'
         ]
     }
 ];

@@ -1,4 +1,4 @@
-var lo = require('@danmasta/lo');
+var lo = require('lo');
 var node_path = require('node:path');
 var node_url = require('node:url');
 

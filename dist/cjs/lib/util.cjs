@@ -1,4 +1,4 @@
-var lo = require('@danmasta/lo');
+var lo = require('lo');
 var node_child_process = require('node:child_process');
 var process = require('node:process');
 var node_util = require('node:util');

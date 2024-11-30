@@ -1,5 +1,5 @@
-var lo = require('@danmasta/lo');
-var errors = require('@danmasta/lo/errors');
+var lo = require('lo');
+var errors = require('lo/errors');
 var util = require('./util.cjs');
 var vault = require('./vault.cjs');
 

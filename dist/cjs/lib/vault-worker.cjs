@@ -1,4 +1,4 @@
-var lo = require('@danmasta/lo');
+var lo = require('lo');
 var process = require('node:process');
 var vault = require('./vault.cjs');
 

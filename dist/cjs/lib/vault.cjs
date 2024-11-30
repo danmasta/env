@@ -1,4 +1,4 @@
-var lo = require('@danmasta/lo');
+var lo = require('lo');
 var promises = require('node:fs/promises');
 var constants = require('./constants.cjs');
 var util = require('./util.cjs');

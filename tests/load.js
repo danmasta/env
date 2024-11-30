@@ -16,8 +16,8 @@ describe('Load', () => {
         expect(env.get('ENV_TEST_LOAD_FILE_SYNC')).to.equal('test');
     });
 
-    it.skip('should load env variables from vault', () => {
-        env.loadFromVault();
+    it.skip('should load env variables from vault', async () => {
+        return env.loadFromVault();
     });
 
 });

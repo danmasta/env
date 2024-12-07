@@ -219,7 +219,7 @@ export default {
 ```
 
 #### Load env variables dynamically from vault based on config settings
-If you use a [config library](https://github.com/danmasta/config) that supports loading `js` files you can use this package to load environment variables based on your config settings:
+If you use a [config](https://github.com/danmasta/config) library that supports loading `js` files you can use this package to load environment variables based on your config settings:
 ```js
 // ./config/local.js
 import { loadFromVault } from 'env';

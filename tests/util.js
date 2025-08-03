@@ -2,7 +2,7 @@ import { parseEnvStr } from '../lib/util.js';
 
 describe('Util', () => {
 
-    it('should parse env values from strings', () => {
+    it('should parse variables from strings', () => {
 
         let res = parseEnvStr(envstr);
 

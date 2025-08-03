@@ -17,14 +17,15 @@ export default [
             sourcemap: false,
             strict: false,
             preserveModules: true,
-            exports: 'auto',
+            exports: 'named',
             entryFileNames: '[name].[format]',
             esModule: false
         },
         plugins: [
             resolve(),
             replace({
-                'vault-worker.js': 'vault-worker.cjs'
+                'vault-worker.js': 'vault-worker.cjs',
+                preventAssignment: true
             })
         ],
         external: [

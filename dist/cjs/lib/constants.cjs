@@ -3,7 +3,7 @@ var node_path = require('node:path');
 var node_url = require('node:url');
 
 var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-const lib = node_path.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.src || new URL('lib/constants.cjs', document.baseURI).href))));
+const lib = node_path.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('lib/constants.cjs', document.baseURI).href))));
 
 // Primitive types
 const TYPES = {

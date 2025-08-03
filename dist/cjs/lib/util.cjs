@@ -1,19 +1,15 @@
 var lo = require('lo');
+var errors = require('lo/errors');
 var node_child_process = require('node:child_process');
 var process = require('node:process');
 var node_util = require('node:util');
 var constants = require('./constants.cjs');
 
-class EnvError extends Error {
+class EnvError extends errors.BaseError {
     constructor (...args) {
         super(node_util.format(...args));
-        Error.captureStackTrace(this, this.constructor);
-        this.name = this.constructor.name;
-        this.code = this.constructor.code;
     }
-    static get code () {
-        return 'ERR_ENV';
-    }
+    static code = 'ERR_ENV';
 }
 
 // https://mathiasbynens.be/notes/javascript-escapes
@@ -70,7 +66,7 @@ function parseParamStr (str) {
     }
 }
 
-function expandVars (str, vars, replace=1, def='') {
+function expandVars (str, { vars, replace=1, def='' }={}) {
     if (!lo.isString(str)) {
         // Need to return same value
         return str;
@@ -84,7 +80,7 @@ function expandVars (str, vars, replace=1, def='') {
         }
         if (lo.isNilEnv(lo.ENV[key])) {
             if (vars) {
-                val = expandVars(vars[key], undefined, replace, def);
+                val = expandVars(vars[key], { replace, def });
             }
         } else {
             val = lo.ENV[key];
@@ -100,11 +96,11 @@ function expandVars (str, vars, replace=1, def='') {
     });
 }
 
-function parseEnvStr (str, expand=1, replace=1, def='') {
-    let res = {};
+function parseEnvStr (str, { expand=1, replace=1, def='' }={}) {
+    let vars = {};
     let prev;
     if (!lo.isString(str)) {
-        return res;
+        return vars;
     }
     lo.each(lo.split(str, constants.REGEX.newline, { trim: true }), line => {
         // Ignore comments
@@ -112,9 +108,9 @@ function parseEnvStr (str, expand=1, replace=1, def='') {
             return;
         }
         if (expand) {
-            line = expandVars(line, res, replace, def);
+            line = expandVars(line, { vars, replace, def });
         }
-        let [key, val = ''] = lo.split(line, '=', { limit: 1, trim: true });
+        let [key, val=''] = lo.split(line, '=', { limit: 1, trim: true });
         // Support multiline values
         if (!val && key.length === line.length) {
             val = key, key = null;
@@ -123,15 +119,15 @@ function parseEnvStr (str, expand=1, replace=1, def='') {
         val = unescape(val);
         // Support multiline values
         if (key) {
-            res[key] = val;
+            vars[key] = val;
             prev = key;
         } else {
             if (prev) {
-                res[prev] += (res[prev] ? '\n' : '') + val;
+                vars[prev] += (vars[prev] ? '\n' : '') + val;
             }
         }
     });
-    return res;
+    return vars;
 }
 
 function unixify (str) {

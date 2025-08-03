@@ -1,5 +1,19 @@
-var env$1 = require('./lib/env.cjs');
+var env = require('./lib/env.cjs');
 
-const env = new env$1().resolveSync();
+env.loadFromArgv({ overwrite: true });
+env.loadFromFilesSync(env.defs);
+env.setHelpers(env.defs);
 
-module.exports = env;
+exports.Env = env.Env;
+exports.default = env.env;
+exports.env = env.env;
+exports.get = env.get;
+exports.loadFromArgv = env.loadFromArgv;
+exports.loadFromFiles = env.loadFromFiles;
+exports.loadFromFilesSync = env.loadFromFilesSync;
+exports.loadFromVault = env.loadFromVault;
+exports.loadFromVaultSync = env.loadFromVaultSync;
+exports.resolve = env.resolve;
+exports.resolveSync = env.resolveSync;
+exports.set = env.set;
+exports.setHelpers = env.setHelpers;

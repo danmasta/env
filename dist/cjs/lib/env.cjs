@@ -3,209 +3,276 @@ var errors = require('lo/errors');
 var util = require('./util.cjs');
 var vault = require('./vault.cjs');
 
-const argv = lo.parseArgv(lo.ARGV.slice(2));
-
 const defs = {
-    enableArgv: true,
-    nativeType: true,
+    setArgv: false,
+    argv: undefined,
     setNodeEnv: false,
+    nodeEnv: 'development',
     helpers: ['DEVELOPMENT', 'PRODUCTION'],
     files: ['./.env', './config/.env', './env.js', './config/env.js'],
     dir: undefined,
+    exts: ['.js', '.json', '.cjs', '.mjs'],
     encoding: 'utf8',
-    timeout: 1000 * 2.5,
+    native: true,
     replace: true,
-    default: '',
-    defaultNodeEnv: 'development',
+    def: '',
     secret: undefined,
     token: undefined,
     addr: undefined,
+    timeout: 2500,
+    silent: true,
     warn: false,
-    throw: false,
-    exts: ['.js', '.json', '.cjs', '.mjs']
+    overwrite: false
 };
 
 class Env {
 
     constructor (opts) {
         this.opts = opts = lo.defaults(opts, defs);
-        if (opts.enableArgv) {
-            this.set('NODE_ENV', argv['node-env']);
-            this.set(util.parseParamStr(argv['env']));
-        }
     }
 
-    get (key) {
-        if (this.opts.nativeType) {
-            return lo.toNativeType(lo.ENV[key]);
-        }
-        return lo.ENV[key];
+    get (key, { native=this.opts.native, string }={}) {
+        return get(key, { native, string });
     }
 
-    set (key, val, args) {
-        switch (arguments.length) {
-            case 1:
-                if (lo.isObject(key)) {
-                    lo.forOwn(key, (v, k, args) => {
-                        this.set(k, v, args);
-                    });
-                }
-                return lo.ENV;
-            case 2:
-            case 3:
-                let { replace, default: def, nativeType } = this.opts;
-                let v = lo.ENV[key];
-                val = util.expandVars(val, args, replace, def);
-                if (lo.isNilEnv(v)) {
-                    return lo.ENV[key] = val;
-                }
-                if (nativeType) {
-                    return lo.toNativeType(v);
-                }
-                return v;
-        }
+    set (key, val, opts) {
+        return set(key, val, { ...this.opts, ...opts });
     }
 
-    env (key, val, args) {
-        switch (arguments.length) {
-            case 1:
-                if (lo.isString(key)) {
-                    return this.get(key);
-                } else {
-                    return this.set(key);
-                }
-            case 2:
-            case 3:
-                return this.set(key, val, args);
-            default:
-                return lo.ENV;
-        }
+    env (key, val, opts) {
+        return env(key, val, { ...this.opts, ...opts });
     }
 
-    setHelpers () {
-        let { setNodeEnv, defaultNodeEnv, helpers } = this.opts;
-        if (setNodeEnv) {
-            this.set('NODE_ENV', defaultNodeEnv);
-        }
-        if (helpers) {
-            let env = lo.toUpper(this.get('NODE_ENV'));
-            lo.eachNotNil(helpers, str => {
-                this.set(str, str === env);
-            });
-        }
+    setHelpers (opts) {
+        setHelpers({ ...this.opts, ...opts });
     }
 
-    async resolve () {
-        let {
-            files,
-            dir,
-            exts,
-            encoding,
-            replace,
-            default: def
-        } = this.opts;
-        files = await lo.importRequireOrReadFiles(files, { dir, exts, encoding });
-        lo.eachNotNil(files, ({ err, contents }) => {
-            if (err) {
-                this.handleError(err);
-            } else {
-                if (lo.isModule(contents)) {
-                    this.set(contents.default);
-                } else if (lo.isString(contents)) {
-                    this.set(util.parseEnvStr(contents, false, replace, def));
-                } else {
-                    this.set(contents);
-                }
-            }
-        });
-        this.setHelpers();
-        return this.exports;
+    loadFromArgv (opts) {
+        loadFromArgv({ ...this.opts, ...opts });
     }
 
-    resolveSync () {
-        let {
-            files,
-            dir,
-            exts,
-            encoding,
-            replace,
-            default: def
-        } = this.opts;
-        files = lo.requireOrReadFilesSync(files, { dir, exts, encoding });
-        lo.eachNotNil(files, ({ err, contents }) => {
-            if (err) {
-                this.handleError(err);
-            } else {
-                if (lo.isModule(contents)) {
-                    this.set(contents.default);
-                } else if (lo.isString(contents)) {
-                    this.set(util.parseEnvStr(contents, false, replace, def));
-                } else {
-                    this.set(contents);
-                }
-            }
-        });
-        this.setHelpers();
-        return this.exports;
+    async loadFromFiles (opts) {
+        await loadFromFiles({ ...this.opts, ...opts });
     }
 
-    async loadFromVault (path, opts={}) {
+    loadFromFilesSync (opts) {
+        loadFromFilesSync({ ...this.opts, ...opts });
+    }
+
+    async loadFromVault (path, opts) {
         if (lo.isObject(path)) {
-            opts = path;
-        } else {
-            opts.secret = path;
+            [path, opts] = [opts, path];
         }
-        let { secret, token, addr, timeout } = this.opts;
-        let vars = await vault.getVaultSecret(lo.defaults(opts, { secret, token, addr, timeout }));
-        this.set(vars);
+        await loadFromVault(path, { ...this.opts, ...opts });
     }
 
-    loadFromVaultSync (path, opts={}) {
+    loadFromVaultSync (path, opts) {
         if (lo.isObject(path)) {
-            opts = path;
-        } else {
-            opts.secret = path;
+            [path, opts] = [opts, path];
         }
-        let { secret, token, addr, timeout } = this.opts;
-        let vars = vault.getVaultSecretSync(lo.defaults(opts, { secret, token, addr, timeout }));
-        this.set(vars);
+        loadFromVaultSync(path, { ...this.opts, ...opts });
     }
 
-    handleError (err) {
-        if (err.code !== errors.NotFoundError.code) {
-            throw err;
-        } else {
-            if (this.opts.throw) {
-                throw err;
-            }
-            if (this.opts.warn) {
-                console.warn(err);
-            }
-        }
+    async resolve (opts) {
+        await resolve({ ...this.opts, ...opts });
     }
 
-    get exports () {
-        let env = this.env.bind(this);
-        env.get = this.get.bind(this);
-        env.set = this.set.bind(this);
-        env.env = env;
-        env.Env = Env;
-        env.loadFromVault = this.loadFromVault.bind(this);
-        env.loadFromVaultSync = this.loadFromVaultSync.bind(this);
-        return env;
+    resolveSync (opts) {
+        resolveSync({ ...this.opts, ...opts });
+    }
+
+    handleError (err, { silent=this.opts.silent, warn=this.opts.warn }={}) {
+        handleError(err, { silent, warn });
     }
 
     static get defaults () {
         return defs;
     }
 
-    static factory () {
-        let Fn = this;
-        return function factory (...args) {
-            return new Fn(...args);
+    static factory (defs) {
+        return function factory (opts) {
+            return new Env({ ...defs, ...opts });
         };
     }
 
 }
 
-module.exports = Env;
+function get (key, { native=true, string }={}) {
+    if (native && !string) {
+        return lo.toNativeType(lo.ENV[key]);
+    }
+    return lo.ENV[key];
+}
+
+function set (key, val, { vars, replace, def, native=true, string, overwrite }={}) {
+    let type = lo.getType(key);
+    if (type.object) {
+        lo.forOwn(key, (v, k, vars) => {
+            set(k, v, { vars, replace, def, native, string, overwrite });
+        });
+        return lo.ENV;
+    }
+    if (key) {
+        let v = lo.ENV[key];
+        val = util.expandVars(val, { vars, replace, def });
+        if (lo.isNilEnv(v) || overwrite) {
+            return lo.ENV[key] = val;
+        }
+        if (native && !string) {
+            return lo.toNativeType(v);
+        }
+        return v;
+    }
+    return lo.ENV;
+}
+
+function env (key, val, opts) {
+    switch (arguments.length) {
+        case 1:
+            if (lo.isString(key)) {
+                return get(key);
+            }
+            return set(key);
+        case 2:
+            if (lo.isObject(val)) {
+                return get(key, val);
+            }
+            return set(key, val);
+        case 3:
+            return set(key, val, opts);
+        default:
+            return lo.ENV;
+    }
+}
+
+function setHelpers ({ nodeEnv, helpers, ...opts }={}) {
+    if (nodeEnv) {
+        set('NODE_ENV', nodeEnv, opts);
+    }
+    if (helpers) {
+        let env = lo.toUpper(get('NODE_ENV'));
+        lo.eachNotNil(helpers, str => {
+            set(str, str === env, opts);
+        });
+    }
+}
+
+function loadFromArgv ({ argv, ...opts }={}) {
+    if (!lo.isObject(argv)) {
+        argv = lo.parseArgv(argv);
+    }
+    if (argv.nodeEnv) {
+        set('NODE_ENV', argv.nodeEnv, opts);
+    }
+    if (argv.env) {
+        set(util.parseParamStr(argv.env), undefined, opts);
+    }
+}
+
+async function loadFromFiles ({ files, dir, exts, encoding, ...opts }={}) {
+    lo.eachNotNil(await lo.importRequireOrReadFiles(files, { dir, exts, encoding }), ({ err, data }) => {
+        if (err) {
+            handleError(err, opts);
+        } else {
+            if (lo.isModule(data)) {
+                set(data.default ?? data, undefined, opts);
+            } else if (lo.isString(data)) {
+                set(util.parseEnvStr(data, { ...opts, expand: false }), undefined, opts);
+            } else {
+                set(data, undefined, opts);
+            }
+        }
+    });
+}
+
+function loadFromFilesSync ({ files, dir, exts, encoding, ...opts }={}) {
+    lo.eachNotNil(lo.requireOrReadFilesSync(files, { dir, exts, encoding }), ({ err, data }) => {
+        if (err) {
+            handleError(err, opts);
+        } else {
+            if (lo.isModule(data)) {
+                set(data.default ?? data, undefined, opts);
+            } else if (lo.isString(data)) {
+                set(util.parseEnvStr(data, { ...opts, expand: false }), undefined, opts);
+            } else {
+                set(data, undefined, opts);
+            }
+        }
+    });
+}
+
+async function loadFromVault (path, { secret, token, addr, timeout=2500, ...opts }={}) {
+    if (lo.isObject(path)) {
+        ({ secret, token, addr, timeout=timeout, ...opts } = path);
+    } else {
+        if (path) {
+            secret = path;
+        }
+    }
+    let vars = await vault.getVaultSecret({ secret, token, addr, timeout });
+    set(vars, undefined, opts);
+}
+
+function loadFromVaultSync (path, { secret, token, addr, timeout=2500, ...opts }={}) {
+    if (lo.isObject(path)) {
+        ({ secret, token, addr, timeout=timeout, ...opts } = path);
+    } else {
+        if (path) {
+            secret = path;
+        }
+    }
+    let vars = vault.getVaultSecretSync({ secret, token, addr, timeout });
+    set(vars, undefined, opts);
+}
+
+async function resolve ({ setArgv, setNodeEnv, ...opts }={}) {
+    if (setArgv) {
+        loadFromArgv(opts);
+    }
+    await loadFromFiles(opts);
+    if (setNodeEnv) {
+        setHelpers(opts);
+    }
+}
+
+function resolveSync ({ setArgv, setNodeEnv, ...opts }={}) {
+    if (setArgv) {
+        loadFromArgv(opts);
+    }
+    loadFromFilesSync(opts);
+    if (setNodeEnv) {
+        setHelpers(opts);
+    }
+}
+
+function handleError (err, { silent=true, warn=false }={}) {
+    if (err.code !== errors.NotFoundError.code) {
+        throw err;
+    } else {
+        if (!silent) {
+            if (warn) {
+                console.warn(err);
+            } else {
+                throw err;
+            }
+        }
+    }
+}
+
+exports.getVaultSecret = vault.getVaultSecret;
+exports.getVaultSecretSync = vault.getVaultSecretSync;
+exports.Env = Env;
+exports.default = env;
+exports.defs = defs;
+exports.env = env;
+exports.get = get;
+exports.handleError = handleError;
+exports.loadFromArgv = loadFromArgv;
+exports.loadFromFiles = loadFromFiles;
+exports.loadFromFilesSync = loadFromFilesSync;
+exports.loadFromVault = loadFromVault;
+exports.loadFromVaultSync = loadFromVaultSync;
+exports.resolve = resolve;
+exports.resolveSync = resolveSync;
+exports.set = set;
+exports.setHelpers = setHelpers;

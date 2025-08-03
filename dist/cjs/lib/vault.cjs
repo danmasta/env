@@ -49,7 +49,7 @@ async function getVaultSecret (path, opts={}) {
     if (res.ok) {
         return json.data.data;
     } else {
-        throw new util.EnvError('Vault request failed: %O', json);
+        throw new util.EnvError('Vault request failed: %d %s: %O', res.status, res.statusText, json);
     }
 }
 

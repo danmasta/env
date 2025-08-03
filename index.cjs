@@ -1,5 +1,21 @@
-import Env from './lib/env.js';
+import { defs, loadFromArgv, loadFromFilesSync, setHelpers } from './lib/env.js';
 
-const env = new Env().resolveSync();
+loadFromArgv({ overwrite: true });
+loadFromFilesSync(defs);
+setHelpers(defs);
 
-export default env;
+export {
+    env as default,
+    Env,
+    env,
+    get,
+    loadFromArgv,
+    loadFromFiles,
+    loadFromFilesSync,
+    loadFromVault,
+    loadFromVaultSync,
+    resolve,
+    resolveSync,
+    set,
+    setHelpers
+} from './lib/env.js';

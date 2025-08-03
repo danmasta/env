@@ -1,10 +1,12 @@
-logs/
-node_modules/
-tmp/
 build/
 coverage/
-.nyc_output/
+dev/
+logs/
+node_modules/
+secrets/
+tmp/
 .DS_Store
 .idea
 .log
+.nyc_output
 .vscode

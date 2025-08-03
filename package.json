@@ -48,15 +48,12 @@
     "lo": "github:danmasta/lo#8f7ac55"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-replace": "^5.0.7",
-    "c8": "^10.1.2",
-    "chai": "^5.1.1",
-    "eslint": "^8.57.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^7.0.0",
-    "mocha": "^10.7.0",
-    "rollup": "^4.19.1"
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-replace": "^6.0.2",
+    "c8": "^10.1.3",
+    "chai": "^5.2.1",
+    "eslint": "^9.32.0",
+    "mocha": "^11.7.1",
+    "rollup": "^4.46.2"
   }
 }

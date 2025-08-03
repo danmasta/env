@@ -1,14 +1,21 @@
-import Env from './lib/env.js';
+import { defs, loadFromArgv, loadFromFiles, setHelpers } from './lib/env.js';
 
-export const {
-    get,
-    set,
-    env,
-    loadFromVault,
-    loadFromVaultSync
-} = await new Env().resolve();
+loadFromArgv({ overwrite: true });
+await loadFromFiles(defs);
+setHelpers(defs);
 
 export {
     env as default,
-    Env
-};
+    Env,
+    env,
+    get,
+    loadFromArgv,
+    loadFromFiles,
+    loadFromFilesSync,
+    loadFromVault,
+    loadFromVaultSync,
+    resolve,
+    resolveSync,
+    set,
+    setHelpers
+} from './lib/env.js';

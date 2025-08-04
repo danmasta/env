@@ -26,8 +26,8 @@ Add env as a dependency for your app and install via npm
 npm install env@danmasta/env --save
 ```
 Install a specific [version](https://github.com/danmasta/env/tags)
-```sh
-npm install env@danmasta/env#(tag\|commit) --save
+```
+npm install env@danmasta/env#(tag|commit) --save
 ```
 
 Import or require the package in your app

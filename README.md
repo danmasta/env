@@ -14,7 +14,7 @@ Environment helper for node apps
 * Start of line and end of line [comments](#comments) are supported
 * Support for multiline values
 * Support for loading variables from [vault](#load-variables-from-vault)
-* Native esm and cjs support
+* Native ESM and CJS support
 * 0 external dependencies
 
 ## About
@@ -22,12 +22,12 @@ I wanted a better way to interact with environment variables in node apps. This 
 
 ## Usage
 Add env as a dependency for your app and install via npm
-```bash
+```sh
 npm install env@danmasta/env --save
 ```
 Install a specific [version](https://github.com/danmasta/env/tags)
-```bash
-npm install env@danmasta/env#(tag|commit) --save
+```sh
+npm install env@danmasta/env#(tag\|commit) --save
 ```
 
 Import or require the package in your app
@@ -86,10 +86,10 @@ Name | Description
 
 ## Environment Files
 By default this package will attempt to load environment files in the following order:
-1. `./.env`
-2. `./config/.env`
-3. `./env.(js|json|cjs|mjs)`
-4. `./config/env.(js|json|cjs|mjs)`
+1. `.env`
+2. `config/.env`
+3. `env.(js|json|cjs|mjs)`
+4. `config/env.(js|json|cjs|mjs)`
 
 *Note: If multiple files are found, they do not overwrite each other. This package respects the first value set for each key*
 
@@ -103,7 +103,7 @@ Just use regular escape code format for values with escape sequences: `\u{1d306}
 
 ## Variable Expansion
 Bash-like variable expansion is supported in `.env` files. Just prefix a variable name with a `$` sign or wrap it in `${var}`. If you need to escape the `$` sign just use regular escape format like other sequences: `\$`.
-```bash
+```sh
 HOST=127.0.0.1
 PORT=6379
 REDIS_URL=redis://$HOST:$PORT
@@ -113,32 +113,40 @@ ESCAPED=\$ESCAPED
 ## Helper Options
 There are a few helper options you can use to set `NODE_ENV` and parse variables from `argv`:
 ```js
+import { setHelpers } from 'env';
+
+await setHelpers({
+    nodeEnv: 'development',
+    helpers: ['DEVELOPMENT', 'PRODUCTION']
+});
+```
+Or you can do it all at the same time with `resolve`:
+```js
 import { resolve } from 'env';
 
 await resolve({
     setArgv: true
     setNodeEnv: true,
-    nodeEnv: 'development',
-    helpers: ['DEVELOPMENT', 'PRODUCTION'],
+    ...opts
 });
 ```
 This will enable CLI arguments for setting environment variables when running your app:
-```bash
+```sh
 node app --node-env=local --env=REDIS_HOST=127.0.0.1,REDIS_PORT=6379
 ```
-Two other helper variables are also added: `DEVELOPMENT`, and `PRODUCTION`. These are boolean values which will be `true` if `NODE_ENV` matches their variable name, otherwise `false`.
+The other helper variables are also added. They become boolean values which will be `true` if `NODE_ENV` matches their variable name, otherwise `false`.
 
 ## Comments
 Start of line and end of line comments are supported:
-```bash
+```sh
 # Redis config
 HOST=127.0.0.1
 PORT=6379
-REDIS_URL=redis://$HOST:$PORT # Expanded redis url
+REDIS_URL=redis://$HOST:$PORT # Redis URL
 ```
 If you want to use the `#` symbol in a string, just wrap the string in single or double quotes:
-```bash
-TEST='This #comment will not be stripped'
+```sh
+TEST="This #comment will be ignored"
 ```
 
 ## Load Additional Files
@@ -177,7 +185,7 @@ await loadFromVault('/env/data/app/prod');
 ```
 
 ### Sync
-If your app is still `cjs` and/or doesn't support top level `await` and you need to load variables from vault synchronously, you can do that too:
+If your app still uses `CJS` and/or doesn't support top level `await` and you need to load variables from vault synchronously, you can do that too:
 ```js
 const { loadFromVaultSync } = require('env');
 
@@ -213,7 +221,7 @@ await loadFromFiles({
 ```
 
 #### Load environment variables from vault
-```bash
+```sh
 export VAULT_TOKEN="$TOKEN"
 export VAULT_ADDR="https://vault.example.net"
 ```
@@ -222,7 +230,7 @@ await loadFromVault('/env/app/prod');
 ```
 
 #### ESM
-If using esm for config, you can export your env variables using a default export or named exports:
+If using ESM for your config, you can export env variables as a default export or named exports:
 ```js
 export default {
     REDIS_HOST: '127.0.0.1',

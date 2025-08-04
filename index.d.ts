@@ -1,21 +1,23 @@
 interface Defaults {
-    enableArgv: boolean,
-    nativeType: boolean,
+    setArgv: boolean,
+    argv: string | string[] | object,
     setNodeEnv: boolean,
-    helpers: string|string[],
-    files: string|string[],
+    nodeEnv: string,
+    helpers: string | string[],
+    files: string | string[],
     dir: string,
-    encoding: string|null,
-    timeout: number,
+    exts: string | string[],
+    encoding: string | null,
+    native: boolean,
     replace: boolean,
-    default: string,
-    defaultNodeEnv: string,
+    def: string,
     secret: string,
     token: string,
     addr: string,
+    timeout: number,
+    silent: boolean,
     warn: boolean,
-    throw: boolean,
-    exts: string|string[]
+    overwrite: boolean
 }
 
 type Subset<T> = Partial<{
@@ -23,32 +25,51 @@ type Subset<T> = Partial<{
 }>
 
 type GetFn = {
-    (key: string): string|number|boolean|null|undefined;
+    (key: string, opts?: { native?: boolean, string?: boolean }): string | number | boolean | null | undefined;
 }
 
 type SetFn = {
-    (key: string|object, val?: unknown, args?: object): unknown;
+    (key: string | object, val?: unknown, opts?: Subset<Defaults>): unknown;
 }
 
 type EnvFn = {
-    (key: string|object, val?: unknown, args?: object): unknown;
+    (key: string | object, val?: unknown, opts?: Subset<Defaults>): unknown;
+}
+
+type SetHelpersFn = {
+    (opts?: Subset<Defaults>): void;
+}
+
+type LoadFromArgvFn = {
+    (opts?: Subset<Defaults>): void;
+}
+
+type LoadFromFilesFn = {
+    (opts?: Subset<Defaults>): Promise<void>;
+}
+
+type LoadFromFilesSyncFn = {
+    (opts?: Subset<Defaults>): void;
 }
 
 type LoadFromVaultFn = {
-    (secret?: string|object, opts?: { secret?: string, token?: string, addr?: string, timeout?: number }): Promise<void>;
+    (secret?: string | object, opts?: Subset<Defaults>): Promise<void>;
 }
 
 type LoadFromVaultSyncFn = {
-    (secret?: string|object, opts?: { secret?: string, token?: string, addr?: string, timeout?: number }): void;
+    (secret?: string | object, opts?: Subset<Defaults>): void;
 }
 
-type ExportsFn = EnvFn & {
-    get: GetFn;
-    set: SetFn;
-    env: ExportsFn;
-    Env: typeof Env;
-    loadFromVault: LoadFromVaultFn;
-    loadFromVaultSync: LoadFromVaultSyncFn;
+type ResolveFn = {
+    (opts?: Subset<Defaults>): Promise<void>;
+}
+
+type ResolveSyncFn = {
+    (opts?: Subset<Defaults>): void;
+}
+
+type HandleErrorFn = {
+    (err: Error, opts?: { silent?: boolean, warn?: boolean }): void;
 }
 
 type FactoryFn = {
@@ -61,26 +82,43 @@ declare class Env {
     get: GetFn;
     set: SetFn;
     env: EnvFn;
-    setHelpers (): void;
-    resolve (): Promise<ExportsFn>;
-    resolveSync (): ExportsFn;
+    setHelpers: SetHelpersFn;
+    loadFromArgv: LoadFromArgvFn;
+    loadFromFiles: LoadFromFilesFn;
+    loadFromFilesSync: LoadFromFilesSyncFn;
     loadFromVault: LoadFromVaultFn;
     loadFromVaultSync: LoadFromVaultSyncFn;
-    handleError (err: Error): void;
-    public get exports (): ExportsFn;
+    resolve: ResolveFn;
+    resolveSync: ResolveSyncFn;
+    handleError: HandleErrorFn;
     static get defaults (): Defaults;
-    static factory (): FactoryFn;
+    static factory (defs?: Subset<Defaults>): FactoryFn;
 }
 
-export const {
-    get,
-    set,
-    env,
-    loadFromVault,
-    loadFromVaultSync
-}: Awaited<Promise<ExportsFn>>;
+declare const env: EnvFn;
+declare const get: GetFn;
+declare const loadFromArgv: LoadFromArgvFn;
+declare const loadFromFiles: LoadFromFilesFn;
+declare const loadFromFilesSync: LoadFromFilesSyncFn;
+declare const loadFromVault: LoadFromVaultFn;
+declare const loadFromVaultSync: LoadFromVaultSyncFn;
+declare const resolve: ResolveFn;
+declare const resolveSync: ResolveSyncFn;
+declare const set: SetFn;
+declare const setHelpers: SetHelpersFn;
 
 export {
     env as default,
-    Env
+    Env,
+    env,
+    get,
+    loadFromArgv,
+    loadFromFiles,
+    loadFromFilesSync,
+    loadFromVault,
+    loadFromVaultSync,
+    resolve,
+    resolveSync,
+    set,
+    setHelpers
 };

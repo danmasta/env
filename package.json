@@ -1,7 +1,7 @@
 {
   "name": "@danmasta/env",
   "private": true,
-  "version": "5.2.0",
+  "version": "6.0.0",
   "author": "Daniel Smith <dannmasta@gmail.com>",
   "description": "Environment helper for node apps",
   "license": "MIT",
